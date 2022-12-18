@@ -20,8 +20,5 @@ metadata:
   name: admin
 spec:
   email: {{ .Values.staticUser.userName }}
-  # это хэш сгенерированного пароля: 4z3mcrx3r9
-  # echo "secret" | htpasswd -BinC 10 "" | cut -d: -f2
-  # возможно, захотите изменить
   password: {{ .Values.staticUser.password }}
 {{ end }}
