@@ -1,0 +1,27 @@
+{{ if ge .Release.Revision 2 }}
+---
+apiVersion: deckhouse.io/v1
+kind: ClusterAuthorizationRule
+metadata:
+  name: admin
+spec:
+  # список учётных записей Kubernetes RBAC
+  subjects:
+  - kind: User
+    name: {{ .Values.staticUser.userName }}
+  # предустановленный шаблон уровня доступа
+  accessLevel: {{ .Values.staticUser.accessLevel }}
+  # разрешить пользователю делать kubectl port-forward
+  portForwarding: true
+---
+apiVersion: deckhouse.io/v1
+kind: User
+metadata:
+  name: admin
+spec:
+  email: {{ .Values.staticUser.userName }}
+  # это хэш сгенерированного пароля: 4z3mcrx3r9
+  # echo "secret" | htpasswd -BinC 10 "" | cut -d: -f2
+  # возможно, захотите изменить
+  password: {{ .Values.staticUser.password }}
+{{ end }}

@@ -1,0 +1,29 @@
+{{ if ge .Release.Revision 2 }}
+---
+apiVersion: deckhouse.io/v1
+kind: IngressNginxController
+metadata:
+  name: {{ .Values.ingessController.name | quote }}
+spec:
+  chaosMonkey: false
+  controllerVersion: {{ .Values.ingessController.controllerVersion | quote }}
+  disableHTTP2: false
+  hsts: false
+  ingressClass: {{ .Values.ingessController.ingressClass | quote }}
+  inlet: LoadBalancerWithProxyProtocol
+  loadBalancerWithProxyProtocol:
+    annotations:
+      loadbalancer.openstack.org/proxy-protocol: "true"
+  maxReplicas: {{ .Values.ingessController.maxReplicas }}
+  minReplicas: {{ .Values.ingessController.minReplicas }}
+{{- if .Values.ingessController.nodeSelector }}
+  nodeSelector:
+    {{- toYaml .Values.ingessController.nodeSelector | nindent 4 }}
+{{- end }}
+{{- if .Values.ingessController.tolerations }}
+  tolerations:
+    {{- toYaml .Values.ingessController.tolerations | nindent 4 }}
+{{- end }}
+  underscoresInHeaders: false
+  validationEnabled: false
+{{ end }}

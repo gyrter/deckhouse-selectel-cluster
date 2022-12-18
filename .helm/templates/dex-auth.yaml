@@ -1,0 +1,34 @@
+{{ if ge .Release.Revision 2 }}
+---
+apiVersion: deckhouse.io/v1
+kind: DexProvider
+metadata:
+  name: gitlab
+spec:
+  type: Gitlab
+  displayName: Dedicated Gitlab
+  gitlab:
+    baseURL: https://gitlab.klan-hub.ru
+    clientID: {{ .Values.dexAuth.clientID }}
+    clientSecret: {{ .Values.dexAuth.clientSecret }}
+    groups:
+{{- range $group, $_ := .Values.dexAuth.gitlabGroups }}
+    - {{ $group | quote }}
+{{- end }}
+{{- range $group, $accessLevel := .Values.dexAuth.gitlabGroups }}
+---
+apiVersion: deckhouse.io/v1
+kind: ClusterAuthorizationRule
+metadata:
+  name: "gitlab-{{ $group }}"
+spec:
+  # список учётных записей Kubernetes RBAC
+  subjects:
+  - kind: Group
+    name: {{ $group | quote }}
+  # предустановленный шаблон уровня доступа
+  accessLevel: {{ $accessLevel | quote }}
+  # разрешить пользователю делать kubectl port-forward
+  portForwarding: false
+{{- end }}
+{{- end }}

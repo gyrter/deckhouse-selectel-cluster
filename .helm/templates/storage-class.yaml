@@ -1,0 +1,15 @@
+{{- range .Values.storageClasses.types }}
+---
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "{{ . }}.{{ $.Values.region }}{{ $.Values.availabilityZone }}"
+parameters:
+  availability: "{{ $.Values.region }}{{ $.Values.availabilityZone }}"
+  fsType: ext4
+  type: "{{ . }}.{{ $.Values.region }}{{ $.Values.availabilityZone }}"
+provisioner: cinder.csi.openstack.org
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+{{- end }}

@@ -1,0 +1,29 @@
+region: ru-3
+availabilityZone: a
+
+storageClasses:
+  types:
+    - fast
+    - basic
+    - universal
+
+# Ingress nginx controller
+ingessController:
+  name: main
+  controllerVersion: "1.1"
+  ingressClass: nginx
+  minReplicas: 1
+  maxReplicas: 1
+
+# Статичный пользователь для работы с кластером без внешней авторизации
+staticUser:
+  userName: admin@dev-k8s.example.com
+  accessLevel: SuperAdmin
+
+# Внешняя авторизацяи
+dexAuth:
+  enabled: true
+  gitlabURL: https://gitlab.example.com
+  gitlabGroups:
+   infra: SuperAdmin
+  gitlabAccessLevel: SuperAdmin
